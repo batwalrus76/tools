@@ -83,16 +83,31 @@ function install() {
 	fi
 }
 
+export DEV_HOME=$HOME/dev
+
+if [[ -e "$DEV_HOME/.gh_token" ]]; then
+	GH_TOKEN=(`cat "$DEV_HOME/.gh_token"`)
+	GH_USER=(`cat "$DEV_HOME/.gh_user"`)
+fi
+
 function setup_machine() {
+	if [[ ! -e "$DEV_HOME/.gh_token" ]]; then
+		echo "What is your GitHub user?"
+		read gh_user
+		echo $gh_user > $DEV_HOME/.gh_user
+		echo "What is the access token of that user?"
+		read gh_token
+		echo $gh_token > $DEV_HOME/.gh_token
+	fi
 	install zsh
 	install -b tmux
 	install fonts
 }
 
 function save_tools() {
-	pushd $HOME/dev/tools
+	pushd $DEV_HOME/tools
 	git commit -a -m "Latest update to tools"
-	git push
+	git push "https://$GH_USER:$GH_TOKEN@github.com/batwalrus76/tools.git" --all
 	popd
 }
 
