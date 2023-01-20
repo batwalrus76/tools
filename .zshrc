@@ -89,6 +89,13 @@ function setup_machine() {
 	install fonts
 }
 
+function save_tools() {
+	pushd $HOME/dev/tools
+	git commit -a -m "Latest update to tools"
+	git push
+	popd
+}
+
 plugins=(1password aliases aws brew colorize docker git git-flow github gitignore helm jenv jira kubectl npm nvm pip poetry pyenv python sublime taskwarrior tmuxinator virtualenv yarn zsh-interactive-cd  zsh-navigation-tools)
 
 source $ZSH/oh-my-zsh.sh
