@@ -159,6 +159,11 @@ function sz() {
 	done
 }
 
+function popdall() {
+	cd $HOME
+	dirs -c
+}
+
 export DEFAULT_USER=$USER
 prompt_context(){}
 export JAVA_HOME="/opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
