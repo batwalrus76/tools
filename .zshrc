@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -8,7 +15,8 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="agnoster"
+# ZSH_THEME="agnoster"
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -70,6 +78,34 @@ HIST_STAMPS="mm/dd/yyyy"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
+# Functions and related variables
+
+export DEV_HOME=$HOME/dev
+
+if [[ -e "$DEV_HOME/.gh_token" ]]; then
+	GH_TOKEN=(`cat "$DEV_HOME/.gh_token"`)
+	GH_USER=(`cat "$DEV_HOME/.gh_user"`)
+fi
+
+function sz() {
+	typeset -a aliases
+
+	aliases+="$DEV_HOME/cli_tools/.alias"
+	aliases+="$DEV_HOME/tools/.zshrc"
+
+	for file in $aliases[@]; do
+	    if [[ -a "$file" ]]; then
+	        source "$file"
+	    fi
+	done
+}
+
+function popdall() {
+	cd $HOME
+	dirs -c
+}
+
 function install() {
 	if [[ "$1" == "zsh" ]]; then
 		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -84,13 +120,6 @@ function install() {
 		brew install --cask "$2"
 	fi
 }
-
-export DEV_HOME=$HOME/dev
-
-if [[ -e "$DEV_HOME/.gh_token" ]]; then
-	GH_TOKEN=(`cat "$DEV_HOME/.gh_token"`)
-	GH_USER=(`cat "$DEV_HOME/.gh_user"`)
-fi
 
 function setup_machine() {
 	if [[ ! -e "$DEV_HOME/.gh_token" ]]; then
@@ -142,30 +171,18 @@ fi
 # Example aliases
 alias zshconfig="open -a 'Sublime Text' ~/.zshrc"
 alias ohmyzsh="open -a 'Sublime Text' ~/.oh-my-zsh"
-
 alias ll="ls -la"
 alias psg="ps aux | grep"
 
-function sz() {
-	typeset -a aliases
-
-	aliases+="$DEV_HOME/cli_tools/.alias"
-	aliases+="$DEV_HOME/tools/.zshrc"
-
-	for file in $aliases[@]; do
-	    if [[ -a "$file" ]]; then
-	        source "$file"
-	    fi
-	done
-}
-
-function popdall() {
-	cd $HOME
-	dirs -c
-}
+# PATH-related variables
 
 export DEFAULT_USER=$USER
 prompt_context(){}
+export RANCHER_DESKTOP_HOME="$HOME/.rd"
 export JAVA_HOME="/opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
 export AISSEMBLE_HOME="$HOME/aiSSEMBLE/aissemble"
 export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
+export PATH="$RANCHER_DESKTOP_HOME/bin:$PATH"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
