@@ -80,6 +80,8 @@ function install() {
 		sh install.sh
 	elif [[ "$1" == "-b" ]]; then
 		brew install "$2"
+	elif [[ "$1" == "-bc" ]]; then
+		brew install --cask "$2"
 	fi
 }
 
@@ -143,7 +145,22 @@ alias ohmyzsh="open -a 'Sublime Text' ~/.oh-my-zsh"
 
 alias ll="ls -la"
 alias psg="ps aux | grep"
-alias sz="source $HOME/.zshrc"
+
+function sz() {
+	typeset -a aliases
+
+	aliases+="$DEV_HOME/cli_tools/.alias"
+	aliases+="$DEV_HOME/tools/.zshrc"
+
+	for file in $aliases[@]; do
+	    if [[ -a "$file" ]]; then
+	        source "$file"
+	    fi
+	done
+}
 
 export DEFAULT_USER=$USER
 prompt_context(){}
+export JAVA_HOME="/opt/homebrew/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
+export AISSEMBLE_HOME="$HOME/aiSSEMBLE/aissemble"
+export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
